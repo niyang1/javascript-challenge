@@ -6,6 +6,10 @@ var tbody = d3.select("tbody");
 var button = d3.select("#filter-btn");
 var inputField1 = d3.select("#datetime");
 var inputField2 = d3.select("#city");
+var inputField3 = d3.select("#state");
+var inputField4 = d3.select("#country");
+var inputField5 = d3.select("#shape");
+
 var resetbtn = d3.select("#reset-btn");
 var columns = ["datetime", "city", "state", "country", "shape", "durationMinutes", "comments"]
 
@@ -24,38 +28,44 @@ populate(data);
 // Filter by attribute
 button.on("click", () => {
 	d3.event.preventDefault();
-	var dateInput = d3.select("#datetime");
-	var cityInput = d3.select("#city");
-	var stateInput = d3.select("#state");
-	var countryInput = d3.select("#country");
-	var shapeInput = d3.select("#shape");
-	
-	var filtered = tableData.filter(et_sighting =>{
-		return (et_sighting.datetime===dateInput.property("value") || !dateInput.property("value") ) && 
-				  (et_sighting.city===cityInput.property("value") || !cityInput.property("value")) &&
-				  (et_sighting.state===stateInput.property("value") || !stateInput.property("value")) &&
-				  (et_sighting.country===countryInput.property("value") || !countryInput.property("value")) &&
-				  (et_sighting.shape===shapeInput.property("value") || !shapeInput.property("value"))
-	   })
+	var inputDate = inputField1.property("value").trim();
+	var inputCity = inputField2.property("value").toLowerCase().trim();
+	var inputState = inputField3.property("value").toLowerCase().trim();
+	var inputCountry= inputField4.property("value").toLowerCase().trim();
+	var inputShape= inputField5.property("value").toLowerCase().trim();
 
-	   console.log(dateInput.property("value"));
-	   console.log(cityInput.property("value"));
-	   console.log(stateInput.property("value"));
-	   console.log(countryInput.property("value"));
-	   console.log(shapeInput.property("value"));
+	// Filter by field matching input value
+	var filterDate = data.filter(data => data.datetime === inputDate);
+	var filterCity = data.filter(data => data.city === inputCity);
+	var filterState = data.filter(data => data.state === inputState);
+	var filterCountry = data.filter(data => data.country === inputCountry);
+	var filterShape = data.filter(data => data.shape === inputShape);
+	var filterData = data.filter(data => data.datetime === inputDate && data.city === inputCity && data.city === inputState && data.city === inputShape);
 
+	console.log(filterState)
+	console.log(filterData)
+	console.log(filterCity)
+	console.log(filterDate)
+	console.log(filterShape)
+	console.log(filterCountry)
 	// Add filtered sighting to table
 	tbody.html("");
 
 	let response = {
-		filterData, filterCity, filterDate
+		filterData, filterCity, filterDate, filterState, filterCountry, filterShape
 	}
 
 	if (response.filterData.length !== 0) {
 		populate(filterData);
 	}
-		else if (response.filterData.length === 0 && ((response.filterCity.length !== 0 || response.filterDate.length !== 0))){
-			populate(filterCity) || populate(filterDate);
+		else if (response.filterData.length === 0 && ((
+			response.filterCity.length !== 0 
+			|| response.filterDate.length !== 0 
+			|| response.filterState.length !== 0 
+			|| response.filterCountry.length !== 0
+			|| response.filterShape.length !== 0
+			))){
+			populate(filterCity) || populate(filterDate) || populate(filterState) || populate(filterCountry) || populate(filterShape);
 	
 		}
 		else {
